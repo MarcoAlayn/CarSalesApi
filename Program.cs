@@ -9,13 +9,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CarSalesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CarSalesDB")));
 
-builder.Services.AddScoped<ICarService, CarService>(); // Add this line
-builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IModelSpecifications, ModelSpecificationsService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 
@@ -27,6 +38,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Use CORS policy
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 
