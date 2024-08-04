@@ -19,8 +19,18 @@ namespace CarSalesApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ModelSpecification>> GetModelSpecifications()
         {
-            var models = _modelSpecificationsService.GetModelSpecifications();
-            return Ok(models);
+            try
+            {
+
+                var models = _modelSpecificationsService.GetModelSpecifications();
+                return Ok(models);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener las especificaciones de modelos");
+
+            }
         }
     }
 }
